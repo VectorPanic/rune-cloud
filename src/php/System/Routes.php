@@ -8,6 +8,7 @@ use RuneCloud\Controller\CategoryController;
 use RuneCloud\Controller\DeveloperController;
 use RuneCloud\Controller\GameController;
 use RuneCloud\Controller\GameVersionController;
+use RuneCloud\Controller\HighscoreController;
 use RuneCloud\Controller\LibraryController;
 use RuneCloud\Controller\ResetController;
 use RuneCloud\Controller\ScreensaverController;
@@ -26,6 +27,18 @@ final class Routes
     //--------------------------------------------------------------------------
     // Public methods
     //--------------------------------------------------------------------------
+
+    /**
+     * Registers the on-demand highscore synchronization endpoint.
+     * @param Router $router Route registry.
+     * @param Request $request Current input.
+     * @param HighscoreController $controller Endpoint controller.
+     * @return void
+     */
+    public function highscores(Router $router, Request $request, HighscoreController $controller): void
+    {
+        $router->add('POST', '/v1/highscores/sync', fn (): array => $controller->synchronize($request));
+    }
 
     /**
      * Registers the administrative reset endpoint.

@@ -101,7 +101,7 @@ final class Unpublished
      */
     private function validateIdentifier(string $identifier): void
     {
-        if (strlen($identifier) > 100 || preg_match('/^[a-z][a-z0-9-]*$/D', $identifier) !== 1) {
+        if (!Identifier::isValid($identifier)) {
             throw new HttpException('invalid_game_id', 422);
         }
     }

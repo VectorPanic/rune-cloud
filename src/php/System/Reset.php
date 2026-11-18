@@ -24,7 +24,7 @@ final class Reset
     private const TABLES = [
         'library_revision_files', 'library_revision_releases', 'library_revisions',
         'release_files', 'releases', 'game_versions', 'screensaver_versions',
-        'game_tags', 'game_inputs', 'game_modes', 'games', 'screensavers',
+        'highscores', 'game_tags', 'game_inputs', 'game_modes', 'games', 'screensavers',
         'api_tokens', 'developers', 'file_contents',
     ];
 

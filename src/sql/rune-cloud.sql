@@ -357,6 +357,8 @@ CREATE TABLE `games` (
   `developer_id` bigint UNSIGNED DEFAULT NULL
 ) ;
 
+
+
 -- --------------------------------------------------------
 
 --
@@ -856,6 +858,20 @@ ALTER TABLE `tags`
 ALTER TABLE `tag_groups`
   MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
+CREATE TABLE `highscores` (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `game_id` bigint UNSIGNED NOT NULL,
+  `table_index` smallint UNSIGNED NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `score` double NOT NULL,
+  `score_date` double NOT NULL,
+  `fingerprint` char(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_highscore_entry` (`game_id`,`table_index`,`fingerprint`),
+  KEY `idx_highscore_ranking` (`game_id`,`table_index`,`score` DESC,`score_date`,`fingerprint`),
+  CONSTRAINT `fk_highscores_game` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 --
 -- Restriktioner för dumpade tabeller
 --
@@ -1005,7 +1021,7 @@ ALTER TABLE `game_tags`
   ADD CONSTRAINT `chk_game_tags_strength` CHECK ((`strength` between 0 and 100));
 
 ALTER TABLE `games`
-  ADD CONSTRAINT `chk_games_identifier` CHECK (regexp_like(`identifier`,_utf8mb4'^[a-z][a-z0-9-]*$')),
+  ADD CONSTRAINT `chk_games_identifier` CHECK (regexp_like(`identifier`,_utf8mb4'^[a-z]{2,3}[.][a-z0-9-]{1,50}[.][a-zA-Z0-9_-]+$',_utf8mb4'c')),
   ADD CONSTRAINT `chk_games_players` CHECK ((((`min_players` is null) and (`max_players` is null)) or ((`min_players` between 1 and 255) and (`max_players` between 1 and 255) and (`min_players` <= `max_players`))));
 
 ALTER TABLE `library_revision_files`

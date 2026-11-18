@@ -114,7 +114,7 @@ final class GameController
             throw new HttpException('not_found', 404);
         }
 
-        return $game + $this->games->status([$id])[strtolower($id)];
+        return $game + $this->games->status([$id])[$id];
     }
 
     /**

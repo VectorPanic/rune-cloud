@@ -8,6 +8,7 @@ use RuneCloud\Controller\CategoryController;
 use RuneCloud\Controller\DeveloperController;
 use RuneCloud\Controller\GameController;
 use RuneCloud\Controller\GameVersionController;
+use RuneCloud\Controller\HighscoreController;
 use RuneCloud\Controller\LibraryController;
 use RuneCloud\Controller\ResetController;
 use RuneCloud\Controller\ScreensaverController;
@@ -116,6 +117,7 @@ final class Setup
         $routes->developers($router, $request, $this->createDeveloperController($developerAuth));
         $routes->tokens($router, $request, $this->createTokenController($developerAuth));
         $routes->games($router, $request, $this->createGameController($developerAuth));
+        $routes->highscores($router, $request, $this->createHighscoreController());
         $routes->gameVersions(
             $router, $request, $this->createGameVersionController($developerAuth, $publisher)
         );
@@ -263,6 +265,17 @@ final class Setup
     private function createGameController(DeveloperAuth $authentication): GameController
     {
         return new GameController(new Games($this->database, new \RuneCloud\Game\Validation()), $authentication, $this->createGameDeletion());
+    }
+
+    /**
+     * Composes the on-demand highscore synchronization endpoint.
+     * @return HighscoreController Controller using the shared database connection.
+     */
+    private function createHighscoreController(): HighscoreController
+    {
+        return new HighscoreController(new \RuneCloud\Highscore\Sync(
+            $this->database, new \RuneCloud\Highscore\Validation()
+        ));
     }
 
     /**

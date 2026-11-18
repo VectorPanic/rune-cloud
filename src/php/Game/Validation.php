@@ -25,7 +25,7 @@ final class Validation
     public function validate(array $data): void
     {
         $id = $data['id'] ?? null;
-        if (!is_string($id) || strlen($id) > 100 || preg_match('/^[a-z][a-z0-9-]*$/D', $id) !== 1) {
+        if (!Identifier::isValid($id)) {
             throw new HttpException('invalid_game_id', 422);
         }
         unset($data['id']);

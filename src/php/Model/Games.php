@@ -89,7 +89,7 @@ final class Games
 
     /**
      * Loads current-library selection and publication history with a fixed number of queries.
-     * Missing games default to unpublished; map keys are lowercase public identifiers.
+     * Missing games default to unpublished; map keys preserve public identifiers.
      * @param list<string> $identifiers Game identifiers.
      * @return array<string, array{published: bool, activeVersion: ?string, activeStage: ?string}> Status by identifier.
      * @throws \mysqli_sql_exception When the query fails.
@@ -99,7 +99,7 @@ final class Games
         if ($identifiers === []) {
             return [];
         }
-        $identifiers = array_values(array_unique(array_map('strtolower', $identifiers)));
+        $identifiers = array_values(array_unique($identifiers));
         $statuses = array_fill_keys($identifiers, ['published' => false, 'activeVersion' => null, 'activeStage' => null]);
         $placeholders = implode(',', array_fill(0, count($identifiers), '?'));
         $current = $this->database->fetchOne(
@@ -119,7 +119,7 @@ final class Games
             LEFT JOIN releases r ON r.game_version_id = v.id
             LEFT JOIN library_revision_releases membership ON membership.release_id = r.id
             LEFT JOIN library_revisions library ON library.id = membership.library_revision_id
-            WHERE g.identifier IN ($placeholders)
+            WHERE BINARY g.identifier IN ($placeholders)
             GROUP BY g.id, g.identifier
             SQL,
             [$current->id ?? null, $current->id ?? null, ...$identifiers]
@@ -161,7 +161,7 @@ final class Games
                     LIMIT 1
                 ) AS stage
             FROM games AS g
-            WHERE g.identifier = ?
+            WHERE BINARY g.identifier = BINARY ?
             SQL,
             [$id]
         );

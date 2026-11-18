@@ -117,7 +117,7 @@ final class Setup
         $routes->developers($router, $request, $this->createDeveloperController($developerAuth));
         $routes->tokens($router, $request, $this->createTokenController($developerAuth));
         $routes->games($router, $request, $this->createGameController($developerAuth));
-        $routes->highscores($router, $request, $this->createHighscoreController());
+        $routes->highscores($router, $request, $this->createHighscoreController($developerAuth));
         $routes->gameVersions(
             $router, $request, $this->createGameVersionController($developerAuth, $publisher)
         );
@@ -269,13 +269,16 @@ final class Setup
 
     /**
      * Composes the on-demand highscore synchronization endpoint.
+     * @param DeveloperAuth $authentication Developer token authentication.
      * @return HighscoreController Controller using the shared database connection.
      */
-    private function createHighscoreController(): HighscoreController
+    private function createHighscoreController(DeveloperAuth $authentication): HighscoreController
     {
-        return new HighscoreController(new \RuneCloud\Highscore\Sync(
-            $this->database, new \RuneCloud\Highscore\Validation()
-        ));
+        return new HighscoreController(
+            new \RuneCloud\Highscore\Sync($this->database, new \RuneCloud\Highscore\Validation()),
+            new \RuneCloud\Highscore\Clear($this->database),
+            $authentication
+        );
     }
 
     /**

@@ -38,6 +38,8 @@ final class Routes
     public function highscores(Router $router, Request $request, HighscoreController $controller): void
     {
         $router->add('POST', '/v1/highscores/sync', fn (): array => $controller->synchronize($request));
+        $router->add('DELETE', '/v1/games/{id}/highscores',
+            fn ($id): array => $controller->delete($id, $request));
     }
 
     /**

@@ -188,6 +188,7 @@ Tag documents use `id`, `name`, `kind` (`base` or `modifier`), optional `descrip
 | Method | Endpoint | Access | Operation |
 | --- | --- | --- | --- |
 | `POST` | `/v1/highscores/sync` | Public | Merge a registered game's SDK highscore tables and return the result. |
+| `DELETE` | `/v1/games/{id}/highscores` | Developer | Delete all global highscore tables for an owned game. |
 
 Example request:
 
@@ -204,6 +205,8 @@ Example request:
 The response is a JSON object with `tables` containing the same number of tables and places. `appId` must exactly match a registered game; an unknown game returns `404 game_not_found`. Results are ordered by descending score, ascending timestamp and then a stable fingerprint. Repeated submissions of the same name, score and timestamp for a game and table are deduplicated. Entries named `Rune` with score `0` are empty places and are not stored as results. Timestamps are client-provided and are not verified.
 
 Requests allow 1–32 tables, 1–100 places per table and at most 1,000 places total, within the 64 KiB JSON limit. Each entry must contain only `name`, `score` and `date`; names are at most 255 Unicode characters and 1,020 bytes, and score and date are finite numbers from 0 through 9,007,199,254,740,991. The endpoint does not authenticate players, verify scores or enforce a rate limit.
+
+Deleting a game's highscores returns `{"deleted":true,"id":"com.vectorpanic.demo"}`. It clears only the server's results; games may submit their locally stored scores again on the next synchronization. Clear those local tables separately when resetting test data. A synchronization that completes after the deletion can also submit results again.
 
 ### Library and administration
 

@@ -151,6 +151,7 @@ final class Games
                 g.developer,
                 g.description,
                 g.year,
+                g.promotion,
                 g.min_players AS minimumPlayers,
                 g.max_players AS maximumPlayers,
                 (
@@ -174,6 +175,7 @@ final class Games
         $game['stage'] = $row->stage ?? 'gold';
         $game['description'] = $row->description ?? '';
         $game['type'] = 'game';
+        $game['promotion'] = (int) $row->promotion;
         $game['input'] = $this->getInputs((int) $row->gameId);
         $game['tags'] = (object) [];
         $game['baseTags'] = (object) [];

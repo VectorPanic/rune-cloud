@@ -350,6 +350,7 @@ CREATE TABLE `games` (
   `description` text COLLATE utf8mb4_unicode_ci,
   `developer` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `year` smallint UNSIGNED DEFAULT NULL,
+  `promotion` tinyint UNSIGNED NOT NULL DEFAULT 0,
   `min_players` tinyint UNSIGNED DEFAULT NULL,
   `max_players` tinyint UNSIGNED DEFAULT NULL,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -1022,6 +1023,7 @@ ALTER TABLE `game_tags`
 
 ALTER TABLE `games`
   ADD CONSTRAINT `chk_games_identifier` CHECK (regexp_like(`identifier`,_utf8mb4'^[a-z]{2,3}[.][a-z0-9-]{1,50}[.][a-zA-Z0-9_-]+$',_utf8mb4'c')),
+  ADD CONSTRAINT `chk_games_promotion` CHECK (`promotion` between 0 and 100),
   ADD CONSTRAINT `chk_games_players` CHECK ((((`min_players` is null) and (`max_players` is null)) or ((`min_players` between 1 and 255) and (`max_players` between 1 and 255) and (`min_players` <= `max_players`))));
 
 ALTER TABLE `library_revision_files`
